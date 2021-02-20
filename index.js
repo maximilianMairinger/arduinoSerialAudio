@@ -1,3 +1,4 @@
+require("./logger")()
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
 const open = require("open")
@@ -33,7 +34,7 @@ const run = {
       
       
     }
-    else console.log("")
+    else console.log("Cannot find song")
   }
 }
 
