@@ -1,16 +1,46 @@
+const SerialPort = require('serialport');
+const Readline = require('@serialport/parser-readline');
+const open = require("open")
+const fs = require("fs")
+const playlist = JSON.parse(fs.readFileSync("./playlist.json"))
+for (const songId in playlist) {
+  if (typeof playlist[songId] !== "string") {
+    if (typeof playlist[songId] === "object") {
+      if (playlist[songId].name === undefined || playlist[songId].url === undefined) throw new Error('Songs must be an url as string or a object of {"name": "Happy birthday", "url": "https://www.youtube.com/watch?v=fTbEpGZyseA"}')
+    }
+    else throw new Error('Songs must be an url as string or a object of {"name": "Happy birthday", "url": "https://www.youtube.com/watch?v=fTbEpGZyseA"}')
+  }
+}
+
 
 
 const run = {
   state: {
     rdy: "Ready for input"
+  },
+  UID(id) {
+    console.log("read card id: \"" + id + "\"")
+    const song = playlist[id]
+    if (song !== undefined) {
+      if (typeof song === "string") {
+        console.log("Opening song url: " + song)
+        open(song)
+      }
+      else {
+        console.log("Opening song " + song.name)
+        open(song.url)
+      }
+      
+      
+    }
+    else console.log("")
   }
 }
 
 
 
 
-const SerialPort = require('serialport');
-const Readline = require('@serialport/parser-readline');
+
 try {
   const port = new SerialPort('/dev/ttyACM0', { baudRate: 9600 });
   const parser = port.pipe(new Readline({ delimiter: '\n' }));
